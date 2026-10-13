@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import authRoutes from "./routes/auth.routes";
+import { authenticate } from "./middleware/auth.middleware";
 
 const app = express();
 
@@ -9,6 +10,10 @@ app.use(express.json());
 
 app.get("/api/health", (_req, res) => {
   res.json({ status: "ok" });
+});
+
+app.get("/api/test-auth", authenticate, (req, res) => {
+  res.json({ user: req.user });
 });
 
 app.use("/api/auth", authRoutes);
