@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import authRoutes from "./routes/auth.routes";
 import campaignRoutes from "./routes/campaign.routes";
+import submissionRoutes from "./routes/submission.routes";
 import { authenticate } from "./middleware/auth.middleware";
 
 const app = express();
@@ -20,5 +21,7 @@ app.get("/api/test-auth", authenticate, (req, res) => {
 app.use("/api/auth", authRoutes);
 
 app.use("/api/campaigns", campaignRoutes);
+
+app.use("/api/submissions", submissionRoutes);
 
 export default app;
