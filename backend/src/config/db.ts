@@ -5,6 +5,7 @@ export async function connectDB(): Promise<void> {
   if (!uri) {
     throw new Error("MONGODB_URI is not set in the environment");
   }
-  await mongoose.connect(uri);
-  console.log("MongoDB connected");
+ await mongoose.connect(uri);
+console.log("MongoDB connected");
+console.log("Connected database:", mongoose.connection.name);
 }
