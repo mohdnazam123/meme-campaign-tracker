@@ -7,7 +7,7 @@ export function authenticate(
   res: Response,
   next: NextFunction
 ): void {
-  // 1. Header check: "Authorization: Bearer <token>"
+  // 1. Header check:
   const authHeader = req.headers.authorization;
   const parts = authHeader ? authHeader.split(" ") : [];
 
@@ -20,7 +20,7 @@ export function authenticate(
 
   const token = parts[1];
 
-  // 2. Secret check (server configuration error, secret kabhi response me nahi jata)
+  // 2. Secret check 
   const jwtSecret = process.env.JWT_SECRET;
   if (!jwtSecret) {
     console.error("JWT_SECRET is not set in the environment");
@@ -28,7 +28,7 @@ export function authenticate(
     return;
   }
 
-  // 3. Token verify karo
+  // 3. Token 
   let decoded: string | jwt.JwtPayload;
   try {
     decoded = jwt.verify(token, jwtSecret, { algorithms: ["HS256"] });
@@ -41,7 +41,6 @@ export function authenticate(
     return;
   }
 
-  // 4. Payload safely validate karo
   if (
     typeof decoded === "string" ||
     typeof decoded.userId !== "string" ||
@@ -52,12 +51,11 @@ export function authenticate(
     return;
   }
 
-  // 5. User request me attach karo
+  // 5. User request 
   req.user = {
     id: decoded.userId,
     role: decoded.role as UserRole,
   };
 
-  // 6. Sab theek, aage badho
   next();
 }

@@ -82,7 +82,7 @@ export async function login(req: Request, res: Response): Promise<void> {
   try {
     const { email, password } = req.body ?? {};
 
-    // 1. Dono values text honi chahiye aur khali nahi
+    
     if (
       typeof email !== "string" ||
       typeof password !== "string" ||
@@ -93,7 +93,7 @@ export async function login(req: Request, res: Response): Promise<void> {
       return;
     }
 
-    // 2. JWT_SECRET missing ho to safely 500 do (app crash nahi hoga)
+    // 2. JWT_SECRET 
     const jwtSecret = process.env.JWT_SECRET;
     if (!jwtSecret) {
       console.error("JWT_SECRET is not set in the environment");
@@ -101,7 +101,7 @@ export async function login(req: Request, res: Response): Promise<void> {
       return;
     }
 
-    // 3. User dhundo (password hash explicitly mangao)
+    // 3. User dhundo 
     const normalizedEmail = email.trim().toLowerCase();
     const user = await User.findOne({ email: normalizedEmail }).select(
       "+password"
@@ -112,21 +112,21 @@ export async function login(req: Request, res: Response): Promise<void> {
       return;
     }
 
-    // 4. Password compare karo
+    // 4. Password compare 
     const isPasswordCorrect = await bcrypt.compare(password, user.password);
     if (!isPasswordCorrect) {
       res.status(401).json({ message: "Invalid email or password" });
       return;
     }
 
-    // 5. Token banao (1 din ke liye valid)
+    // 5. Token banao
     const token = jwt.sign(
       { userId: user._id.toString(), role: user.role },
       jwtSecret,
       { expiresIn: "1d" }
     );
 
-    // 6. Response me password nahi
+    // 6. Response me password 
     res.status(200).json({
       message: "Login successful",
       token,

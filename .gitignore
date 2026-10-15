@@ -1,5 +1,20 @@
+# Dependencies
 node_modules/
+
+# Build outputs
 dist/
+.next/
+out/
+
+# Environment variables and secrets
 .env
-.env.local
+.env.*
+!.env.example
+!.env.*.example
+
+# Logs
 *.log
+
+# Operating system
+.DS_Store
+Thumbs.db

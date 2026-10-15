@@ -1,12 +1,11 @@
-// User model mock: database ko bilkul nahi chhuta.
-// USER_ROLES hume khud dena padta hai, warna controller use khali dekhta hai.
+
 jest.mock("../src/models/User", () => ({
   __esModule: true,
   default: { findOne: jest.fn(), create: jest.fn() },
   USER_ROLES: ["brand", "creator"],
 }));
 
-// require mocks ke BAAD, taaki app mock wala User hi dekhe
+// require 
 const request = require("supertest");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
@@ -49,7 +48,7 @@ describe("POST /api/auth/signup", () => {
     });
     expect(res.body.user.password).toBeUndefined();
 
-    // Password plain text me save nahi hona chahiye, bcrypt hash hona chahiye
+    // Password 
     const savedData = User.create.mock.calls[0][0];
     expect(savedData.password).not.toBe("secret123");
     expect(savedData.password).toMatch(/^\$2[aby]\$/);
@@ -103,7 +102,7 @@ describe("POST /api/auth/signup", () => {
 });
 
 describe("POST /api/auth/login", () => {
-  // Controller findOne(...).select("+password") likhta hai, isliye chain mock
+  // Controller 
   const mockFindOneWithSelect = (user: unknown) => {
     User.findOne.mockReturnValue({
       select: jest.fn().mockResolvedValue(user),
