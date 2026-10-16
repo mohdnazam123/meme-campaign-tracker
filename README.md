@@ -1,89 +1,122 @@
 # Meme'd Campaign Payout Tracker
 
-A full-stack application where brands create meme marketing campaigns and creators submit social media post links and track earnings based on view milestones.
+A full-stack web application where brands create meme marketing campaigns and creators earn payouts based on the views their posts reach.
 
-## Features
+**Live Demo:** https://meme-campaign-tracker-frontend.vercel.app
 
-- JWT-based user authentication.
-- Role-based access for brands and creators.
-- Create campaigns with Instagram or YouTube platforms, budgets, and payout milestones.
-- Browse available campaigns as a creator.
-- Submit post links to campaigns.
+**GitHub Repository:** https://github.com/mohdnazam123/meme-campaign-tracker
+
+**Backend Health Check:** https://meme-campaign-tracker.onrender.com/api/health
+
+## What Does This Project Do?
+
+Brands can create campaigns with a fixed budget and view-based payout milestones. Creators can browse campaigns, submit their post links, update simulated views, and track their earnings.
+
+The application calculates payouts automatically and prevents payouts from exceeding the available campaign budget.
+
+## Main Features
+
+- User signup and login using JWT authentication.
+- Separate roles for brands and creators.
+- Create campaigns for Instagram and YouTube.
+- Set campaign budgets and payout milestones.
+- Browse campaigns and submit post links as a creator.
 - Update simulated post views.
-- Calculate payouts based on the highest milestone reached.
-- Prevent duplicate payouts when the same view count is submitted again.
-- Check campaign budgets before increasing payouts.
-- Automated Jest tests for authentication and payout logic.
+- Calculate earnings based on the highest milestone reached.
+- Prevent duplicate payouts for repeated view counts.
+- Prevent payout increases when the remaining campaign budget is insufficient.
+- Track campaign spending and remaining budget.
+- Automated tests for authentication and payout logic.
 
 ## Tech Stack
 
-**Frontend:** Next.js, React, TypeScript  
-**Backend:** Node.js, Express.js, TypeScript  
-**Database:** MongoDB, Mongoose  
-**Authentication:** JWT, bcryptjs  
-**Testing:** Jest, SWC
+- **Frontend:** Next.js, React, TypeScript
+- **Backend:** Node.js, Express.js, TypeScript
+- **Database:** MongoDB, Mongoose
+- **Authentication:** JWT, bcryptjs
+- **Testing:** Jest, SWC
 
-## Prerequisites
+## How Payouts Work
+
+Example:
+
+A campaign has these milestones:
+
+| Views reached | Total payout |
+|---:|---:|
+| 500 | ₹100 |
+| 1,000 | ₹200 |
+| 5,000 | ₹500 |
+
+If a creator reaches 1,000 views, the total payout becomes ₹200, not ₹300. The payout is based on the highest milestone reached, not the sum of all milestones.
+
+The application also checks the remaining campaign budget before increasing a payout.
+
+## Business Rules and Assumptions
+
+- Views are simulated for testing; they are not fetched directly from Instagram or YouTube.
+- Only the highest reached milestone determines the total payout.
+- When a higher milestone is reached, only the difference from the previously paid amount is charged to the campaign budget.
+- Repeating the same view count must not create an additional payout.
+- Decreasing a submission's view count is rejected.
+- If the remaining budget cannot cover the additional payout, the payout remains unchanged.
+- Campaign budgets and payouts are in Indian Rupees (INR).
+- Duplicate post links are not restricted.
+
+## Getting Started Locally
+
+### Prerequisites
 
 - Node.js and npm
 - MongoDB connection string
 - Git
 
-## Project Structure
-
-```text
-meme-campaign-tracker/
-├── backend/
-├── frontend/
-├── .gitignore
-└── README.md
-```
-
-## Backend Setup
+### 1. Clone the repository
 
 ```bash
 git clone https://github.com/mohdnazam123/meme-campaign-tracker.git
-cd meme-campaign-tracker/backend
+cd meme-campaign-tracker
+```
+
+### 2. Set up the backend
+
+```bash
+cd backend
 npm install
 ```
 
-Create `backend/.env` using `backend/.env.example` as a reference.
+Create a `.env` file using `backend/.env.example` as a reference.
 
-Configure these variables:
+Configure these variables with your own values:
 
-- `PORT` — backend server port.
-- `MONGODB_URI` — MongoDB connection string.
-- `CLIENT_URL` — frontend URL allowed by the backend.
-- `JWT_SECRET` — a strong, private JWT signing secret.
+- `PORT` — backend port, usually `5000`.
+- `MONGODB_URI` — your MongoDB connection string.
+- `CLIENT_URL` — frontend URL, usually `http://localhost:3000`.
+- `JWT_SECRET` — a long, random secret used to sign JWT tokens.
 
-Run the development server:
+Start the backend:
 
 ```bash
 npm run dev
 ```
 
-Build the backend:
+To build and run the production version:
 
 ```bash
 npm run build
-```
-
-Run the compiled server:
-
-```bash
 npm start
 ```
 
-## Frontend Setup
+### 3. Set up the frontend
 
-Open another terminal:
+Open a second terminal from the project root:
 
 ```bash
-cd meme-campaign-tracker/frontend
+cd frontend
 npm install
 ```
 
-Create `frontend/.env.local` and configure:
+Create `frontend/.env.local` with:
 
 ```env
 NEXT_PUBLIC_API_URL=http://localhost:5000
@@ -95,54 +128,46 @@ Start the frontend:
 npm run dev
 ```
 
-Open `http://localhost:3000` in your browser.
+Open http://localhost:3000 in your browser.
 
-For a production build:
+### 4. Run the tests
+
+From the backend directory:
+
+```bash
+npm test
+```
+
+Build the backend:
 
 ```bash
 npm run build
 ```
 
-## Testing
-
-Run the backend automated tests:
+From the frontend directory, run the production build:
 
 ```bash
-cd backend
-npm test
+npm run build
 ```
 
-The test suite covers authentication and payout calculation scenarios, including insufficient budget and repeated view updates.
-
-## Payout and Budget Rules
-
-- A creator earns the payout for the highest milestone reached, not the sum of all milestone payouts.
-- When a submission reaches a higher payout milestone, only the difference between the new target payout and the previously paid amount is considered.
-- A payout increase is rejected if the required additional amount exceeds the campaign's remaining budget.
-- Repeating the same view count must not produce another payout.
-- Decreasing a submission's view count is rejected.
-- If the budget is insufficient, the payout remains unchanged.
-
-## Assumptions
-
-- View counts are simulated through the application's API; views are not fetched directly from Instagram or YouTube.
-- Campaign budgets and milestone payouts are expressed in INR.
-- The payout is based on the highest reached milestone.
-- The application uses MongoDB to persist users, campaigns, and submissions.
-
-## Environment Variables and Security
+## Security Notes
 
 - Never commit `.env` or `.env.local` files.
-- Use `.env.example` files to document the required variables without real secrets.
-- Configure production environment variables through the deployment platform.
-- Use a strong JWT secret in production.
+- Do not share passwords, database credentials, or JWT secrets.
+- Use environment variables configured on the deployment platform for production.
 
 ## Deployment
 
-**Live application:** Pending deployment.
+The frontend is deployed on Vercel and the backend is deployed on Render.
 
-The frontend and backend must both be deployed and configured to communicate with each other before a working live link can be provided.
+- **Frontend:** https://meme-campaign-tracker-frontend.vercel.app
+- **Backend:** https://meme-campaign-tracker.onrender.com
+- **Health check:** https://meme-campaign-tracker.onrender.com/api/health
 
-## Repository
+Note: The free backend service may take some time to respond after being inactive.
 
-GitHub: https://github.com/mohdnazam123/meme-campaign-tracker
+## Author
+
+**Mohd Nazam**
+
+GitHub: https://github.com/mohdnazam123
